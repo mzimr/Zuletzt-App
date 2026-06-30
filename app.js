@@ -232,7 +232,9 @@ function renderTaskCard(task) {
   return `
     <div class="task-card s-${status}" data-task-id="${task.id}">
       <button class="task-main" data-action="complete" data-id="${task.id}">
-        <div class="dot"></div>
+        <div class="avatar">
+          ${task.emoji ? `<span class="avatar-emoji">${task.emoji}</span>` : `<div class="dot"></div>`}
+        </div>
         <div class="task-info">
           <div class="task-name">${escapeHtml(task.title)}</div>
           <div class="task-ago">${timeAgo || "Noch nie erledigt"}</div>
@@ -264,7 +266,7 @@ function renderTasksTab() {
       </div>
       ${cats.length > 2 ? `
         <div class="pills">
-          ${cats.map((c) => `<button class="pill ${filter === c ? "active" : ""}" data-action="filter" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("")}
+          ${cats.map((c) => `<button class="pill ${filter === c ? "active" : ""}" data-action="filter" data-cat="${escapeHtml(c)}">${c === ALL ? "" : categoryEmoji(c) + " "}${escapeHtml(c)}</button>`).join("")}
         </div>
       ` : ""}
     </div>
@@ -304,9 +306,27 @@ function renderSettingsTab() {
   `;
 }
 
+const QUICK_EMOJIS = ["🪴","🧺","🧹","🪥","🧴","💊","🐶","🚿","🛁","🧽","🚗","💇","🦷","🛏️","🗑️","📚","💪","🧘","☕","🌿"];
+
+const CATEGORY_EMOJI_MAP = [
+  [/haushalt|putzen|reinig/i, "🧹"],
+  [/gesundheit|arzt|zahn/i, "💊"],
+  [/pflanze|garten/i, "🪴"],
+  [/tier|hund|katze/i, "🐶"],
+  [/auto|fahrzeug/i, "🚗"],
+  [/sport|fitness/i, "💪"],
+  [/sonstig/i, "📌"],
+];
+
+function categoryEmoji(cat) {
+  const found = CATEGORY_EMOJI_MAP.find(([re]) => re.test(cat));
+  return found ? found[1] : "🏷️";
+}
+
 function renderDialog() {
   if (!dialogOpen) return "";
   const task = editTaskId ? state.tasks.find((t) => t.id === editTaskId) : null;
+  const currentEmoji = task?.emoji || "";
   return `
     <div class="overlay" data-action="close-dialog">
       <div class="dialog" onclick="event.stopPropagation()">
@@ -314,6 +334,15 @@ function renderDialog() {
           <h2>${task ? "Aufgabe bearbeiten" : "Neue Aufgabe"}</h2>
           <button data-action="close-dialog">${ICONS.x}</button>
         </div>
+
+        <label class="field-label">Symbol (optional)</label>
+        <div class="emoji-row">
+          <input class="field-input emoji-input" id="f-emoji" maxlength="4" placeholder="🪴" value="${escapeHtml(currentEmoji)}" />
+        </div>
+        <div class="emoji-picker">
+          ${QUICK_EMOJIS.map((e) => `<button type="button" class="emoji-chip" data-action="pick-emoji" data-emoji="${e}">${e}</button>`).join("")}
+        </div>
+
         <label class="field-label">Was möchtest du tracken?</label>
         <input class="field-input" id="f-title" placeholder="z. B. Pflanzen gegossen" value="${task ? escapeHtml(task.title) : ""}" />
         <label class="field-label">Kategorie (optional)</label>
@@ -386,13 +415,19 @@ function bindEvents() {
         const title = document.getElementById("f-title").value.trim();
         if (!title) return;
         const category = document.getElementById("f-category").value.trim();
+        const emoji = document.getElementById("f-emoji").value.trim();
         const intervalRaw = document.getElementById("f-interval").value;
         const interval = parseInt(intervalRaw, 10);
         saveTask({
           title,
           category: category || "Sonstiges",
+          emoji: emoji || null,
           interval_days: Number.isFinite(interval) && interval > 0 ? interval : null,
         });
+      });
+    } else if (action === "pick-emoji") {
+      el.addEventListener("click", () => {
+        document.getElementById("f-emoji").value = el.dataset.emoji;
       });
     } else if (action === "nav") {
       el.addEventListener("click", () => {
