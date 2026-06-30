@@ -1,48 +1,53 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
 
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover">
 
 <title>Zuletzt</title>
 
 <meta
-    name="description"
-    content="Behalte im Blick, wann du Dinge zuletzt erledigt hast.">
+name="description"
+content="Behalte im Blick, wann du Dinge zuletzt erledigt hast.">
 
 <meta
-    name="theme-color"
-    content="#3B82F6">
+name="theme-color"
+content="#3B82F6">
 
 <meta
-    name="apple-mobile-web-app-capable"
-    content="yes">
+name="apple-mobile-web-app-capable"
+content="yes">
 
 <meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="default">
+name="apple-mobile-web-app-status-bar-style"
+content="default">
 
 <meta
-    name="apple-mobile-web-app-title"
-    content="Zuletzt">
+name="apple-mobile-web-app-title"
+content="Zuletzt">
 
 <meta
-    name="mobile-web-app-capable"
-    content="yes">
+name="mobile-web-app-capable"
+content="yes">
 
 <link rel="manifest" href="./manifest.json">
 
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+<link rel="icon" type="image/png" href="./icon-192.png">
+
+<link rel="icon" type="image/png" href="./icon-512.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
 
 <link
 href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -59,12 +64,18 @@ rel="stylesheet">
 <div class="loading-screen">
 
 <div class="loading-logo">
+
 🕒
+
 </div>
 
 <h1>Zuletzt</h1>
 
-<p>Wird geladen…</p>
+<p>
+
+App wird gestartet …
+
+</p>
 
 </div>
 
@@ -74,9 +85,9 @@ rel="stylesheet">
 
 <script>
 
-if ("serviceWorker" in navigator) {
+if("serviceWorker" in navigator){
 
-window.addEventListener("load", () => {
+window.addEventListener("load",()=>{
 
 navigator.serviceWorker
 .register("./sw.js")
@@ -89,4 +100,5 @@ navigator.serviceWorker
 </script>
 
 </body>
+
 </html>
