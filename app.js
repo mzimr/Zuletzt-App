@@ -1,133 +1,296 @@
+// =========================
+// Zuletzt v2.0
+// =========================
+
 const STORAGE = "zuletztTasks";
 
 let tasks = JSON.parse(localStorage.getItem(STORAGE)) || [];
 
 const list = document.getElementById("taskList");
-
 const input = document.getElementById("taskInput");
-
 const addButton = document.getElementById("addButton");
 
+const category = document.getElementById("category");
+const priority = document.getElementById("priority");
+const dueDate = document.getElementById("dueDate");
+const search = document.getElementById("search");
+
 const today = document.getElementById("todayCount");
-
 const done = document.getElementById("doneCount");
-
 const open = document.getElementById("openCount");
 
-function save(){
+function save() {
+    localStorage.setItem(STORAGE, JSON.stringify(tasks));
+    render();
+}
 
-localStorage.setItem(STORAGE,JSON.stringify(tasks));
+function categoryClass(cat) {
 
-render();
+    switch (cat) {
+        case "Privat":
+            return "private";
+
+        case "Arbeit":
+            return "work";
+
+        case "Einkaufen":
+            return "shop";
+
+        case "Gesundheit":
+            return "health";
+
+        default:
+            return "other";
+    }
 
 }
 
-function render(){
+function priorityClass(value) {
 
-list.innerHTML="";
+    if (value == 3) return "priorityHigh";
+    if (value == 2) return "priorityMedium";
 
-tasks.forEach((task,index)=>{
-
-const li=document.createElement("li");
-
-if(task.done){
-
-li.classList.add("done");
+    return "priorityLow";
 
 }
 
-const text=document.createElement("span");
+function render() {
 
-text.innerText=task.title;
+    list.innerHTML = "";
 
-const buttons=document.createElement("div");
+    const query = search.value.toLowerCase();
 
-buttons.className="taskButtons";
+    let filtered = tasks.filter(task => {
 
-const finish=document.createElement("button");
+        return task.title.toLowerCase().includes(query);
 
-finish.innerText="✓";
+    });
 
-finish.onclick=()=>{
+    filtered.sort((a, b) => {
 
-task.done=!task.done;
+        if (a.done !== b.done) {
 
-save();
+            return a.done - b.done;
+
+        }
+
+        return b.priority - a.priority;
+
+    });
+
+    filtered.forEach(task => {
+
+        const li = document.createElement("li");
+
+        if (task.done) {
+
+            li.classList.add("done");
+
+        }
+
+        const left = document.createElement("div");
+
+        left.style.flex = "1";
+
+        const title = document.createElement("div");
+
+        title.className = "taskTitle";
+
+        title.textContent = task.title;
+
+        left.appendChild(title);
+
+        const badges = document.createElement("div");
+
+        badges.className = "badges";
+
+        const cat = document.createElement("span");
+
+        cat.className = "badge " + categoryClass(task.category);
+
+        cat.textContent = task.category;
+
+        badges.appendChild(cat);
+
+        const prio = document.createElement("span");
+
+        prio.className = "badge " + priorityClass(task.priority);
+
+        prio.textContent = "Priorität " + task.priority;
+
+        badges.appendChild(prio);
+
+        left.appendChild(badges);
+
+        if (task.date) {
+
+            const date = document.createElement("div");
+
+            date.className = "taskDate";
+
+            date.textContent = "📅 " + task.date;
+
+            left.appendChild(date);
+
+        }
+
+        const buttons = document.createElement("div");
+
+        buttons.className = "taskButtons";
+
+        const finish = document.createElement("button");
+
+        finish.textContent = "✓";
+
+        finish.onclick = () => {
+
+            task.done = !task.done;
+
+            save();
+
+        };
+
+        const remove = document.createElement("button");
+
+        remove.textContent = "🗑️";
+
+        remove.onclick = () => {
+
+            tasks = tasks.filter(t => t !== task);
+
+            save();
+
+        };
+
+        buttons.appendChild(finish);
+
+        buttons.appendChild(remove);
+
+        li.appendChild(left);
+
+        li.appendChild(buttons);
+
+        list.appendChild(li);
+
+    });
+
+    today.textContent = tasks.length + " Aufgaben";
+
+    done.textContent = tasks.filter(t => t.done).length;
+
+    open.textContent = tasks.filter(t => !t.done).length;
+
+}
+// =========================
+// Neue Aufgabe anlegen
+// =========================
+
+addButton.onclick = () => {
+
+    const title = input.value.trim();
+
+    if (title === "") return;
+
+    tasks.push({
+        id: Date.now(),
+        title: title,
+        done: false,
+        category: category.value,
+        priority: Number(priority.value),
+        date: dueDate.value
+    });
+
+    input.value = "";
+    dueDate.value = "";
+
+    save();
 
 };
 
-const remove=document.createElement("button");
+// Enter-Taste fügt ebenfalls eine Aufgabe hinzu
+input.addEventListener("keydown", (event) => {
 
-remove.innerText="🗑";
+    if (event.key === "Enter") {
 
-remove.onclick=()=>{
+        addButton.click();
 
-tasks.splice(index,1);
-
-save();
-
-};
-
-buttons.appendChild(finish);
-
-buttons.appendChild(remove);
-
-li.appendChild(text);
-
-li.appendChild(buttons);
-
-list.appendChild(li);
+    }
 
 });
 
-today.innerText=tasks.length+" Aufgaben";
+// =========================
+// Live-Suche
+// =========================
 
-done.innerText=tasks.filter(t=>t.done).length;
+search.addEventListener("input", render);
 
-open.innerText=tasks.filter(t=>!t.done).length;
+// =========================
+// Dark Mode
+// =========================
+
+const darkModeButton = document.getElementById("darkModeButton");
+
+darkModeButton.onclick = () => {
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "theme",
+        document.body.classList.contains("dark")
+    );
+
+};
+
+if (localStorage.getItem("theme") === "true") {
+
+    document.body.classList.add("dark");
 
 }
 
-addButton.onclick=()=>{
+// =========================
+// Dashboard
+// =========================
 
-if(input.value.trim()=="") return;
+function updateDashboard() {
 
-tasks.push({
+    const completed = tasks.filter(task => task.done).length;
+    const openTasks = tasks.length - completed;
 
-title:input.value,
+    today.textContent = `${tasks.length} Aufgaben`;
+    done.textContent = completed;
+    open.textContent = openTasks;
 
-done:false
+}
 
-});
+// Dashboard automatisch aktualisieren
+const originalRender = render;
 
-input.value="";
+render = function () {
 
-save();
+    originalRender();
 
-};
-
-document.getElementById("darkModeButton").onclick=()=>{
-
-document.body.classList.toggle("dark");
-
-localStorage.setItem(
-
-"theme",
-
-document.body.classList.contains("dark")
-
-);
+    updateDashboard();
 
 };
 
-if(localStorage.getItem("theme")=="true")
+// =========================
+// Service Worker
+// =========================
 
-document.body.classList.add("dark");
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", () => {
+
+        navigator.serviceWorker.register("sw.js")
+            .then(() => console.log("Service Worker registriert"))
+            .catch(err => console.error(err));
+
+    });
+
+}
+
+// =========================
+// Erste Darstellung
+// =========================
 
 render();
-
-if("serviceWorker" in navigator){
-
-navigator.serviceWorker.register("sw.js");
-
-}
