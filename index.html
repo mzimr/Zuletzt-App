@@ -1,1 +1,116 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Zuletzt</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="styles.css"></head><body><header><h1>Zuletzt</h1></header><main><section class="card"><h2>Heute wichtig</h2><input id="task"><button id="add">Hinzufügen</button><ul id="list"></ul></section></main><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Zuletzt</title>
+
+<meta name="theme-color" content="#ffffff">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="stylesheet" href="styles.css">
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+<div>
+
+<h1>Zuletzt</h1>
+
+<p>Heute wichtig</p>
+
+</div>
+
+<button id="darkModeButton">
+
+🌙
+
+</button>
+
+</header>
+
+<section class="dashboard">
+
+<div class="card big">
+
+<h2>Heute</h2>
+
+<p id="todayCount">
+
+0 Aufgaben
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Erledigt</h2>
+
+<p id="doneCount">
+
+0
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Offen</h2>
+
+<p id="openCount">
+
+0
+
+</p>
+
+</div>
+
+</section>
+
+<section class="newTask">
+
+<input
+id="taskInput"
+placeholder="Neue Aufgabe">
+
+<button id="addButton">
+
++
+
+</button>
+
+</section>
+
+<section>
+
+<ul id="taskList">
+
+</ul>
+
+</section>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
