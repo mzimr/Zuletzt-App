@@ -1,14 +1,1 @@
-{
-  "name": "Zuletzt",
-  "short_name": "Zuletzt",
-  "description": "Behalte im Blick, wann du was zuletzt gemacht hast.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#F5F5F7",
-  "theme_color": "#F5F5F7",
-  "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
+{"name":"Zuletzt","short_name":"Zuletzt","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"logo.svg","sizes":"any","type":"image/svg+xml"}]}
